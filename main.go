@@ -2,32 +2,27 @@ package main
 
 import (
 	"fmt"
-	// "math"
+	"net/http"
 )
 
 func main() {
-	var taskOne = "Watch Go crash course!"
-	var taskTwo = "Watch full Go tutorial!"
-	var taskItems = []string{taskOne, taskTwo}
+	fmt.Println("*** Welcome to my Todo List ***")
 
-	// fmt.Println("#### welcome to our Todolist App! ####")
-	printTasks(taskItems)
+	http.HandleFunc("/", helloUser)
+	http.HandleFunc("/show-tasks", showTasks)
 
-	taskItems = addTask(taskItems, "Learn Go in depth!")
-	taskItems = addTask(taskItems, "Build a Go project!")
-
-	printTasks(taskItems)
+	http.ListenAndServe(":8080", nil)
 }
 
-func printTasks(taskItems []string) {
-	fmt.Println("List my Todos")
-	for index, task := range taskItems {
-		// fmt.Println(index+1, ".",  task)
-		fmt.Printf("%d. %s\n", index+1, task)
+func showTasks(w http.ResponseWriter, r *http.Request) {
+	taskItems := []string{"Buy groceries", "Clean the house", "Finish homework"}
+	for _, task := range taskItems {
+		fmt.Fprintln(w, task)
 	}
 }
 
-func addTask(taskItems []string, newTask string) []string {
-	taskItems = append(taskItems, newTask)
-	return taskItems
+func helloUser(w http.ResponseWriter, r *http.Request) {
+	var greeting string
+	greeting = "Hello User! Welcome to my Todo List"
+	fmt.Fprintln(w, greeting)
 }
